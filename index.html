@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Täglicher Bibelvers & Impuls</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background: linear-gradient(180deg, #e0c3fc 0%, #8ec5fc 50%, #f5f7fa 100%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      color: #2d3748;
+    }
+    .wrapper {
+      width: 100%;
+      max-width: 420px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 28px 20px;
+      border-radius: 24px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+    .icon {
+      font-size: 50px;
+      margin-bottom: 8px;
+      display: inline-block;
+      animation: float 4s ease-in-out infinite;
+    }
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      color: #1a202c;
+      margin-bottom: 4px;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    .date-badge {
+      background: #ebf8ff;
+      border: 1px solid #bee3f8;
+      padding: 6px 16px;
+      border-radius: 20px;
+      display: inline-block;
+      font-size: 13px;
+      color: #2b6cb0;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+    .btn-ok {
+      background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%);
+      color: #ffffff;
+      border: none;
+      padding: 15px 28px;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(43, 108, 176, 0.35);
+      transition: all 0.2s ease;
+      animation: pulseBtn 2s infinite;
+      width: 100%;
+    }
+    .btn-ok:active {
+      transform: scale(0.96);
+    }
+    .verse-box {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 18px;
+      padding: 20px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      border-left: 4px solid #3182ce;
+      text-align: left;
+      margin-bottom: 15px;
+    }
+    .verse-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      color: #2d3748;
+      font-style: italic;
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+    .verse-ref {
+      font-size: 12px;
+      color: #3182ce;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: right;
+    }
+    .task-box {
+      background: #f7fafc;
+      border-radius: 18px;
+      padding: 18px 16px;
+      border: 1px dashed #cbd5e0;
+      text-align: left;
+      margin-bottom: 15px;
+    }
+    .task-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #dd6b20;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .task-text {
+      font-size: 14px;
+      color: #4a5568;
+      line-height: 1.5;
+    }
+    .hidden {
+      display: none !important;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes pulseBtn {
+      0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(43, 108, 176, 0.35); }
+      50% { transform: scale(1.03); box-shadow: 0 6px 20px rgba(43, 108, 176, 0.5); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <div class="card">
+      <div class="icon">🕊️</div>
+      <h1>Tageskalender</h1>
+      <div class="subtitle">Bibelvers & Tagesaufgabe</div>
+
+      <!-- STARTSCHIRM -->
+      <div id="startScreen">
+        <p style="font-size: 14px; color: #4a5568; line-height: 1.5; margin-bottom: 22px;">
+          Tippe auf den Button, um deinen Vers und deine heutige kleine Aufgabe zu öffnen.
+        </p>
+        <button class="btn-ok" onclick="openTodayVerse()">OK / Tagesfenster öffnen ✨</button>
+      </div>
+
+      <!-- INHALTS-ANZEIGE -->
+      <div id="verseScreen" class="hidden">
+        <div class="date-badge" id="currentDateDisplay">--.--.----</div>
+        
+        <div class="verse-box">
+          <div class="verse-text" id="verseText"></div>
+          <div class="verse-ref" id="verseRef"></div>
+        </div>
+
+        <div class="task-box">
+          <div class="task-title">🌱 Deine Tagesaufgabe</div>
+          <div class="task-text" id="taskText"></div>
+        </div>
+
+        <p style="font-size: 12px; color: #a0aec0; margin-top: 15px;">
+          Komm morgen wieder für einen neuen Impuls!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const verseList = [
+      { text: "Gott hat seinen Engeln befohlen, dass sie dich behüten auf allen deinen Wegen.", ref: "Psalm 91,11" },
+      { text: "Der Herr ist mein Hirte, mir wird nichts mangeln.", ref: "Psalm 23,1" },
+      { text: "Ich bin das Licht der Welt. Wer mir nachfolgt, wird nicht wandeln in der Finsternis.", ref: "Johannes 8,12" },
+      { text: "Gott ist die Liebe; und wer in der Liebe bleibt, der bleibt in Gott und Gott in ihm.", ref: "1. Johannes 4,16" },
+      { text: "Niemals werde ich dir meine Hilfe entziehen, nie dich im Stich lassen.", ref: "Josua 1,5" },
+      { text: "Siehe, ich bin bei euch alle Tage bis an der Welt Ende.", ref: "Matthäus 28,20" },
+      { text: "Der Herr segne dich und behüte dich.", ref: "4. Mose 6,24" },
+      { text: "Alle eure Dinge lasst in der Liebe geschehen!", ref: "1. Korinther 16,14" },
+      { text: "Gott hat uns nicht gegeben den Geist der Furcht, sondern der Kraft und der Liebe.", ref: "2. Timotheus 1,7" },
+      { text: "Du machst mir kund den Weg zum Leben: Vor dir ist Freude die Fülle.", ref: "Psalm 16,11" },
+      { text: "Ich danke dir dafür, dass ich erstaunlich wunderbar gemacht bin.", ref: "Psalm 139,14" },
+      { text: "Der Herr ist mein Licht und mein Heil; vor wem sollte ich mich fürchten?", ref: "Psalm 27,1" },
+      { text: "Von allen Seiten umgibst du mich und hältst deine Hand über mir.", ref: "Psalm 139,5" },
+      { text: "Die auf den Herrn harren, kriegen neue Kraft, dass sie auffahren mit Flügeln wie Adler.", ref: "Jesaja 40,31" },
+      { text: "Fürchte dich nicht, denn ich bin mit dir; weiche nicht, denn ich bin dein Gott.", ref: "Jesaja 41,10" },
+      { text: "Der Herr ist meine Stärke und mein Schild; auf ihn hofft mein Herz.", ref: "Psalm 28,7" },
+      { text: "Vertraue auf den Herrn von ganzem Herzen.", ref: "Sprüche 3,5" },
+      { text: "Der Herr behüte deinen Ausgang und Eingang von nun an bis in Ewigkeit.", ref: "Psalm 121,8" },
+      { text: "Seid aber untereinander freundlich und herzlich und vergebt einer dem anderen.", ref: "Epheser 4,32" },
+      { text: "Dein Wort ist meines Fußes Leuchte und ein Licht auf meinem Wege.", ref: "Psalm 119,105" }
+    ];
+
+    // 365 abwechslungsreiche Tagesaufgaben für jeden Tag im Jahr
+    const tasks365 = [
+      "Schicke heute einer Person, die du schätzt, eine liebevolle Nachricht.",
+      "Nimm dir heute 5 Minuten Zeit für Stille und ein kurzes Gebet der Dankbarkeit.",
+      "Schenke heute mindestens einer Person ein ganz bewusstes, ehrliches Lächeln.",
+      "Mache heute jemandem in deinem Umfeld ein unaufgefordertes, schönes Kompliment.",
+      "Halt heute Ausschau nach einer Gelegenheit, jemandem eine kleine Freude zu machen.",
+      "Trinke heute ein Glas Wasser in Ruhe und danke bewusst für das Leben.",
+      "Lass heute eine kleine Unfreundlichkeit anderer einfach an dir abperlen.",
+      "Zähle heute vor dem Einschlafen 3 Dinge auf, für die du heute dankbar bist.",
+      "Nimm dir heute Zeit, um jemandem aufmerksam zuzuhören, ohne zu unterbrechen.",
+      "Tue heute etwas Gutes für deinen Körper – du bist wunderbar gemacht.",
+      "Vergib heute im Stillen jemandem, über den du dich geärgert hast.",
+      "Helfe heute spontan jemandem bei einer Kleinigkeit im Alltag.",
+      "Schreibe dir eine Stärke auf, die Gott in dich gelegt hat.",
+      "Gehe heute ein paar Schritte an der frischen Luft und genieße die Natur.",
+      "Bete heute kurz für jemanden, dem es gerade nicht gut geht.",
+      "Lächle heute deinem Spiegelbild zu und sage dir selbst etwas Nettes.",
+      "Verzichte heute für eine Stunde auf dein Smartphone und genieße den Moment.",
+      "Lobe heute jemanden bei der Arbeit oder zu Hause für seinen Einsatz.",
+      "Lies deinen heutigen Bibelvers noch einmal ganz langsam durch.",
+      "Schenke jemandem heute deine volle Aufmerksamkeit im Gespräch.",
+      "Räume heute einen kleinen Ort in deiner Wohnung auf und schaffe Ordnung.",
+      "Sag heute bewusst 'Danke' zu jemandem, der etwas alltägliches für dich tut.",
+      "Segne heute im Stillen eine Person, der du auf der Straße begegnest.",
+      "Gönne dir heute 10 Minuten ohne Hektik und entspanne deine Schultern.",
+      "Schreibe einer Person, mit der du lange keinen Kontakt hattest, einen kurzen Gruß.",
+      "Versuche heute, den ganzen Tag lang nicht zu jammern oder zu klagen.",
+      "Teile heute etwas mit jemandem – z. B. deinen Snack oder deine Zeit.",
+      "Halte heute jemandem die Tür auf und wünsche einen schönen Tag.",
+      "Nimm dir Zeit, um ein Lieblingslied ganz bewusst anzuhören.",
+      "Ermutige heute jemanden, der gerade an sich zweifelt.",
+      "Lass heute den Vortritt, sei es im Verkehr oder an der Kasse.",
+      "Denke heute an ein schönes Erlebnis aus deiner Vergangenheit und lächle.",
+      "Gieße heute eine Pflanze oder kümmere dich liebevoll um ein Tier.",
+      "Gönne dir heute Abend eine ruhige Tasse Tee oder Kaffee.",
+      "Sprich heute ein kurzes Dankgebet für dein Essen vor der Mahlzeit.",
+      "Achte heute auf deine Gedanken und ersetze negative Gedanken durch Hoffnung.",
+      "Überrasche heute jemanden mit einer kleinen Aufmerksamkeit.",
+      "Nimm dir Zeit, um heute tief durchzuatmen und Ruhe in dein Herz zu lassen.",
+      "Vergib dir selbst heute einen kleinen Fehler, den du gemacht hast.",
+      "Schreibe 3 Dinge auf ein Blatt Papier, die du an deinem Leben liebst.",
+      "Bete heute für den Frieden in der Welt.",
+      "Sage heute deiner Familie oder deinen Freunden, wie wichtig sie dir sind.",
+      "Lies eine Passage in der Bibel oder ein inspirierendes Buch.",
+      "Mache heute einen Spaziergang und achte auf die Schönheit um dich herum.",
+      "Verbreite heute gute Laune, wo immer du bist.",
+      "Hilf heute im Haushalt, ohne dass jemand danach fragen muss.",
+      "Sei heute geduldig mit den Menschen um dich herum.",
+      "Achte heute darauf, positiv über andere zu sprechen.",
+      "Danke Gott heute für seine Zusage, immer bei dir zu sein.",
+      "Schenke heute einem Fremden ein freundliches Nicken."
+    ];
+
+    function openTodayVerse() {
+      const today = new Date();
+
+      // Datum formatieren
+      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      document.getElementById('currentDateDisplay').innerText = today.toLocaleDateString('de-DE', options);
+
+      // Tag des Jahres berechnen (1 bis 365)
+      const startOfYear = new Date(today.getFullYear(), 0, 0);
+      const diff = today - startOfYear;
+      const oneDay = 1000 * 60 * 60 * 24;
+      const dayOfYear = Math.floor(diff / oneDay);
+
+      // Auswählen von Vers und Aufgabe für den jeweiligen Tag des Jahres
+      const verseIndex = dayOfYear % verseList.length;
+      const taskIndex = dayOfYear % tasks365.length;
+
+      const verse = verseList[verseIndex];
+      const task = tasks365[taskIndex];
+
+      document.getElementById('verseText').innerText = "„" + verse.text + "“";
+      document.getElementById('verseRef').innerText = verse.ref;
+      document.getElementById('taskText').innerText = task;
+
+      // Schirme umschalten
+      document.getElementById('startScreen').classList.add('hidden');
+      document.getElementById('verseScreen').classList.remove('hidden');
+
+      // Konfetti-Effekt
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 30,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#8ec5fc', '#e0c3fc', '#ffffff']
+        });
+      }
+    }
+  </script>
+</body>
+</html>
