@@ -2,149 +2,68 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Täglicher Bibelvers & Impuls</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Tageskalender — Ein Impuls für dich</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-    body {
-      background: linear-gradient(180deg, #e0c3fc 0%, #8ec5fc 50%, #f5f7fa 100%);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 15px;
-      color: #2d3748;
-    }
-    .wrapper {
-      width: 100%;
-      max-width: 420px;
-    }
-    .card {
-      background: rgba(255, 255, 255, 0.90);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding: 28px 20px;
-      border-radius: 24px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.7);
-    }
-    .icon {
-      font-size: 50px;
-      margin-bottom: 8px;
-      display: inline-block;
-      animation: float 4s ease-in-out infinite;
-    }
-    h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 28px;
-      color: #1a202c;
-      margin-bottom: 4px;
-    }
-    .subtitle {
-      font-size: 12px;
-      color: #718096;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 20px;
-      font-weight: 600;
-    }
-    .date-badge {
-      background: #ebf8ff;
-      border: 1px solid #bee3f8;
-      padding: 6px 16px;
-      border-radius: 20px;
-      display: inline-block;
-      font-size: 13px;
-      color: #2b6cb0;
-      font-weight: 700;
-      margin-bottom: 18px;
-    }
-    .btn-ok {
-      background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%);
-      color: #ffffff;
-      border: none;
-      padding: 15px 28px;
-      border-radius: 25px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(43, 108, 176, 0.35);
-      transition: all 0.2s ease;
-      animation: pulseBtn 2s infinite;
-      width: 100%;
-    }
-    .btn-ok:active {
-      transform: scale(0.96);
-    }
-    .verse-box {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 18px;
-      padding: 20px 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-      border-left: 4px solid #3182ce;
-      text-align: left;
-      margin-bottom: 15px;
-    }
-    .verse-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      color: #2d3748;
-      font-style: italic;
-      line-height: 1.45;
-      margin-bottom: 10px;
-    }
-    .verse-ref {
-      font-size: 12px;
-      color: #3182ce;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-align: right;
-    }
-    .task-box {
-      background: #f7fafc;
-      border-radius: 18px;
-      padding: 18px 16px;
-      border: 1px dashed #cbd5e0;
-      text-align: left;
-      margin-bottom: 15px;
-    }
-    .task-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: #dd6b20;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .task-text {
-      font-size: 14px;
-      color: #4a5568;
-      line-height: 1.5;
-    }
-    .hidden {
-      display: none !important;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-    @keyframes pulseBtn {
-      0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(43, 108, 176, 0.35); }
-      50% { transform: scale(1.03); box-shadow: 0 6px 20px rgba(43, 108, 176, 0.5); }
-    }
+:root {
+  color-scheme: light;
+  --ink: #20352d;
+  --muted: #748078;
+  --green: #244b3d;
+  --green-dark: #18392e;
+  --lime: #dce9bd;
+  --paper: #f8f6ef;
+  --line: rgba(32, 53, 45, .12);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Plus Jakarta Sans", sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  min-height: 100vh; padding: 42px 24px; display: grid; place-items: center; overflow-x: hidden;
+  color: var(--ink); font-family: var(--sans);
+  background: radial-gradient(ellipse at 12% 14%, rgba(220,233,189,.62), transparent 32%),
+              radial-gradient(ellipse at 92% 84%, rgba(207,221,205,.72), transparent 34%), #edf0e8;
+}
+body::before, body::after { content: ""; position: fixed; z-index: -1; border: 1px solid rgba(36,75,61,.08); border-radius: 50%; pointer-events:none; }
+body::before { width: 520px; height: 520px; top: -290px; right: -150px; }
+body::after { width: 680px; height: 680px; bottom: -470px; left: -250px; }
+.wrapper { width: min(100%, 780px); }
+.card {
+  position: relative; overflow: hidden; padding: clamp(28px, 6vw, 64px); border-radius: 30px;
+  background: rgba(250,249,244,.94); border: 1px solid rgba(255,255,255,.9);
+  box-shadow: 0 28px 80px rgba(35,58,47,.12), 0 2px 8px rgba(35,58,47,.04);
+  text-align: center;
+}
+.card::before { content:""; position:absolute; inset:0 0 auto; height:5px; background:linear-gradient(90deg,#9eb67c,#315b48 48%,#d9c58f); }
+.icon { display:grid; place-items:center; width:62px; height:62px; margin:0 auto 20px; border-radius:22px; color:var(--green); background:#e9efdf; font-size:30px; animation: float 5s ease-in-out infinite; }
+h1 { font-family:var(--serif); font-size:clamp(40px,7vw,58px); line-height:.95; letter-spacing:-.035em; color:var(--green-dark); font-weight:600; }
+.subtitle { margin:12px 0 34px; color:var(--muted); font-size:10px; font-weight:700; letter-spacing:.19em; text-transform:uppercase; }
+#startScreen { max-width:490px; margin:0 auto; padding:30px 0 8px; border-top:1px solid var(--line); }
+#startScreen p { max-width:390px; margin:0 auto 26px !important; color:#65736a !important; font-size:15px !important; line-height:1.8 !important; }
+.btn-ok { display:inline-flex; justify-content:center; align-items:center; gap:12px; width:auto; min-height:58px; padding:0 28px; color:#fff; background:var(--green); border:0; border-radius:999px; font:700 13px var(--sans); letter-spacing:.015em; cursor:pointer; box-shadow:0 12px 24px rgba(36,75,61,.2); transition:transform .2s, background .2s, box-shadow .2s; }
+.btn-ok::after { content:"↗"; font-size:17px; transition:transform .2s; }
+.btn-ok:hover { background:#315f4c; transform:translateY(-2px); box-shadow:0 16px 30px rgba(36,75,61,.24); }
+.btn-ok:hover::after { transform:translate(2px,-2px); }
+.btn-ok:active { transform:scale(.98); }
+.btn-ok:focus-visible { outline:3px solid #a5bc82; outline-offset:4px; }
+#verseScreen { max-width:570px; margin:0 auto; animation: reveal .6s cubic-bezier(.2,.8,.2,1) both; }
+.date-badge { display:inline-flex; align-items:center; gap:9px; padding:9px 15px; margin:0 0 20px; color:var(--green); background:#edf1e6; border:1px solid #dce5d3; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.04em; }
+.date-badge::before { content:""; width:7px; height:7px; border-radius:50%; background:#7f9b63; box-shadow:0 0 0 3px rgba(127,155,99,.14); }
+.verse-box { position:relative; padding:32px clamp(22px,5vw,46px) 26px; margin-bottom:14px; overflow:hidden; color:#fff; background:linear-gradient(145deg,#2e5a47,#1f4236 72%); border-radius:22px; text-align:left; box-shadow:0 18px 35px rgba(27,63,48,.16); }
+.verse-box::before { content:"“"; position:absolute; top:-27px; right:18px; color:rgba(220,233,189,.13); font:180px/.9 var(--serif); }
+.verse-text { position:relative; margin-bottom:20px; font:italic 400 clamp(25px,4.5vw,34px)/1.27 var(--serif); color:#fbfaf4; }
+.verse-ref { position:relative; padding-top:14px; border-top:1px solid rgba(255,255,255,.2); color:#dce9bd; font-size:10px; font-weight:700; letter-spacing:.17em; text-transform:uppercase; text-align:left; }
+.task-box { padding:22px 24px; margin-bottom:0; background:#f2f1e9; border:1px solid #e8e6da; border-radius:20px; text-align:left; }
+.task-title { display:flex; align-items:center; gap:9px; margin-bottom:9px; color:#71804d; font-size:10px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
+.task-text { color:#48584e; font-size:14px; line-height:1.75; }
+#verseScreen > p { margin-top:22px !important; color:#899188 !important; font-size:11px !important; line-height:1.6; }
+.hidden { display:none !important; }
+@keyframes float { 0%,100% { transform:translateY(0) rotate(0); } 50% { transform:translateY(-4px) rotate(-3deg); } }
+@keyframes reveal { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+@media (max-width:600px) { body { padding:18px 14px; } .card { border-radius:24px; padding:34px 22px 30px; } .icon { width:54px; height:54px; border-radius:19px; font-size:26px; margin-bottom:17px; } .subtitle { margin-bottom:27px; } #startScreen { padding-top:24px; } .btn-ok { width:100%; padding:0 18px; } .verse-box { border-radius:18px; } .task-box { padding:19px 18px; } }
+@media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
   </style>
 </head>
 <body>
@@ -158,9 +77,9 @@
       <!-- STARTSCHIRM -->
       <div id="startScreen">
         <p style="font-size: 14px; color: #4a5568; line-height: 1.5; margin-bottom: 22px;">
-          Tippe auf den Button, um deinen Vers und deine heutige kleine Aufgabe zu öffnen.
+          Ein Gedanke für den Tag. Ein kleiner Schritt, der dein Herz weit macht.
         </p>
-        <button class="btn-ok" onclick="openTodayVerse()">OK / Tagesfenster öffnen ✨</button>
+        <button class="btn-ok" onclick="openTodayVerse()">Heutigen Impuls entdecken</button>
       </div>
 
       <!-- INHALTS-ANZEIGE -->
@@ -178,7 +97,7 @@
         </div>
 
         <p style="font-size: 12px; color: #a0aec0; margin-top: 15px;">
-          Komm morgen wieder für einen neuen Impuls!
+          Nimm den Gedanken mit in deinen Tag.
         </p>
       </div>
     </div>
